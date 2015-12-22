@@ -19,10 +19,12 @@ namespace DamacanaApi.Migrations
         {
             context.Products.AddOrUpdate(x => x.ID,
 
-                new Product (){ ID=new Guid(),Name="test",Price=10}
-                 
-                
+                new Product (){ ID=1,Name="Evian",Price=10},
+                new Product (){ ID=2,Name="Hayat",Price=9} ,
+                new Product (){ ID=3,Name="Nestle",Price=13}
              );
+
+          
         }
     }
 }

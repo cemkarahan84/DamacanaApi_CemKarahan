@@ -5,7 +5,7 @@ using System.Web;
 
 namespace DamacanaApi.Models
 {
-    public class Cart
+    public class CartDTO
     {
         public int ID { get; set; }
         public int userId { get; set; }
@@ -13,3 +13,4 @@ namespace DamacanaApi.Models
         public decimal Total { get; set; }
     }
 }
+

@@ -17,19 +17,22 @@ namespace DamacanaApi.Controllers
     {
         private DamacanaApiContext db = new DamacanaApiContext();
 
-         public class TMP
-            {
-                  public Guid ID { get; set; }
-                public string Name { get; set; }
-       
-            }
+         
 
 
         //GET: api/Products  /* To get list of products */
 
-        public IEnumerable<Product>  Get()
+        public IQueryable<ProductDTO>  Get()
         {
-            return db.Products;
+           
+            var Products = from p in db.Products
+                           select new ProductDTO()
+                           {
+                               ID = p.ID,
+                               Name = p.Name
+
+                           };
+            return Products;
             
         }
 
@@ -58,120 +61,34 @@ namespace DamacanaApi.Controllers
         }
 
 
-     /*   // GET: api/Products
-        public IQueryable<Product> GetProducts()
+
+        
+
+        private int ProductCount()
         {
-            return db.Products;
-        } */
+            Product[] tmp = db.Products.ToArray();
 
-        // GET: api/Products/5
-       /* [ResponseType(typeof(Product))]
-        public async Task<IHttpActionResult> GetProduct(Guid id)
-        {
-            Product product = await db.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
 
-            return Ok(product);
-        } */
-
-        // PUT: api/Products/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutProduct(Guid id, Product product)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != product.ID)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(product).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
+            return tmp.Length;
         }
 
-        // POST: api/Products
+        //POST: api/Products
 
-
-        public void Post(string Name, decimal Price)
+         public void Post(string Name, decimal Price)
         {
             Product A = new Product();
 
-            A.ID = new Guid();
+            A.ID = ProductCount() + 1;
             A.Name = Name;
             A.Price = Price;
 
             db.Products.Add(A);
             db.SaveChanges();
 
-        }
-        /*[ResponseType(typeof(Product))]
-        public async Task<IHttpActionResult> PostProduct(Product product)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            product.ID = new Guid();
-            db.Products.Add(product);
+        } 
+       
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ProductExists(product.ID))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = product.ID }, product);
-        }
-
-      /* // DELETE: api/Products/5
-        [ResponseType(typeof(Product))]
-        public async Task<IHttpActionResult> DeleteProduct(Guid id)
-        {
-            Product product = await db.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            db.Products.Remove(product);
-            await db.SaveChangesAsync();
-
-            return Ok(product);
-        } */
-
+     
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -181,9 +98,6 @@ namespace DamacanaApi.Controllers
             base.Dispose(disposing);
         }
 
-        private bool ProductExists(Guid id)
-        {
-            return db.Products.Count(e => e.ID == id) > 0;
-        }
+       
     }
 }

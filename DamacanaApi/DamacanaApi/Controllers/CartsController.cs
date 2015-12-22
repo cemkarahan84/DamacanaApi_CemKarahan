@@ -20,49 +20,36 @@ namespace DamacanaApi.Controllers
         
 
         // GET: api/Carts
-        public IQueryable<Cart> GetCarts()
+        public IQueryable<CartDTO> GetCarts()
         {
-            return db.Carts;
+            var Carts = from c in db.Carts
+                        select new CartDTO()
+                        {
+                            ID = c.ID,
+                            List = c.List,
+                            Total = c.Total
+                        };
+            return Carts;
         }
 
-        // GET: api/Carts/5
-        [ResponseType(typeof(Cart))]
-        public async Task<IHttpActionResult> GetCart(Guid id)
-        {
-            Cart cart = await db.Carts.FindAsync(id);
-            if (cart == null)
-            {
-                return NotFound();
-            }
+        
 
-            return Ok(cart);
-        }
-
-        // PUT: api/Carts/5
+        // PUT: api/Carts/5 {ProductId, CartId}
 
         public void Put (int ProductId, int CartId)
         {
+
+
+
+              Product tmp = db.Products.Find(ProductId);
+
+            Cart tmp2 = db.Carts.Find(CartId);
+
+            tmp2.List.Add(tmp);
+
+        
             
-
-            
-            Product[] A = db.Products.ToArray();
-            
-
-            Product tmp = A[ProductId]; //Recherche produit
-
-
-
-           //recherche cart
-            foreach(var item in db.Carts)
-            {
-                if(CartId==item.ID)
-                {
-                    item.List.Add(tmp);
-                }
-            }
-           
-            
-                db.SaveChanges(); 
+                db.SaveChanges(); //Sauvegarde de la BDD
             
         }
 
@@ -82,42 +69,19 @@ namespace DamacanaApi.Controllers
             db.Carts.Add(Shop);
             db.SaveChanges();
         }
-       /* [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutCart(Guid id, Cart cart)
+
+
+
+        // GET: api/Carts{id}
+        public Cart Get(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            if (id != cart.ID)
-            {
-                return BadRequest();
-            }
+            return db.Carts.Find(id);
+        }
 
-            db.Entry(cart).State = EntityState.Modified;
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CartExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return StatusCode(HttpStatusCode.NoContent);
-        } */
-
-        // POST: api/Carts
-        
+       
 
         // DELETE: api/Carts/5
         [ResponseType(typeof(Cart))]

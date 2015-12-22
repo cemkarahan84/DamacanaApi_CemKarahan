@@ -5,11 +5,13 @@ using System.Web;
 
 namespace DamacanaApi.Models
 {
-    public class Cart
+    public class PurchaseDTO
     {
         public int ID { get; set; }
         public int userId { get; set; }
-        public virtual ICollection<Product> List { get; set; }
-        public decimal Total { get; set; }
+        public decimal totalammount { get; set; }
+        public virtual List<Product> List { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }

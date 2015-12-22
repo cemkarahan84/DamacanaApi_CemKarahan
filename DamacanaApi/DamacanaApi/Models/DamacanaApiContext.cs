@@ -17,10 +17,13 @@ namespace DamacanaApi.Models
     
         public DamacanaApiContext() : base("name=DamacanaApiContext")
         {
+            this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
 
         public System.Data.Entity.DbSet<DamacanaApi.Models.Product> Products { get; set; }
         public System.Data.Entity.DbSet<DamacanaApi.Models.Cart> Carts { get; set; }
+
+        public System.Data.Entity.DbSet<DamacanaApi.Models.Purchase> Purchases { get; set; }
         
     
     }
