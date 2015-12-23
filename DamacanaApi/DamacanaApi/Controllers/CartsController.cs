@@ -26,7 +26,7 @@ namespace DamacanaApi.Controllers
                         select new CartDTO()
                         {
                             ID = c.ID,
-                            List = c.List,
+                           
                             Total = c.Total
                         };
             return Carts;
@@ -34,23 +34,33 @@ namespace DamacanaApi.Controllers
 
         
 
-        // PUT: api/Carts/5 {ProductId, CartId}
-
-        public void Put (int ProductId, int CartId)
+        // PUT: api/Carts
+        public void  Put (int ProductId, int CartId)
         {
+            Cart_Product CP = new Cart_Product();
+            Cart cart = db.Carts.Find(CartId);
+            Product product = db.Products.Find(ProductId);
+
+            //CP.Cart = cart;
+            CP.CartId = cart.ID;
+
+            CP.Product = product;
+            CP.ProductId = product.ID;
+
+            cart.List.Add(CP);
+
+            cart.Total += product.Price;
+            
+            db.Carts.Add(cart);
 
 
 
-              Product tmp = db.Products.Find(ProductId);
 
-            Cart tmp2 = db.Carts.Find(CartId);
-
-            tmp2.List.Add(tmp);
-
-        
+            db.Entry(cart).State = EntityState.Modified;
             
                 db.SaveChanges(); //Sauvegarde de la BDD
-            
+
+                
         }
 
         private int count()
@@ -58,59 +68,49 @@ namespace DamacanaApi.Controllers
            return db.Carts.Count();
         }
 
-        //POST: api/Carts
-        
+        //POST: api/Carts 
         public void Post ()
         {
             Cart Shop = new Cart();
             Shop.ID = count();
-            Shop.List = new List<Product>();
+            Shop.List = new List<Cart_Product>();
 
             db.Carts.Add(Shop);
             db.SaveChanges();
         }
 
-
-
-        // GET: api/Carts{id}
-        public Cart Get(int id)
+        
+    
+        // GET: api/Carts/{id}
+        public CartDetailDTO Get(int Id)
         {
+            Cart cart = db.Carts.Find(Id);
 
-            return db.Carts.Find(id);
+            CartDetailDTO CDD = new CartDetailDTO();
+
+            CDD.ID = cart.ID;
+            CDD.Total = cart.Total;
+            
+
+            var Carts = from c in cart.List
+                        select new Product()
+                        {
+                            ID=c.ProductId,
+                            Name=c.Product.Name,
+                           Price=c.Product.Price
+                        };
+
+            CDD.List = Carts.ToList();
+            
+            return CDD;
         }
 
 
 
        
 
-        // DELETE: api/Carts/5
-        [ResponseType(typeof(Cart))]
-        public async Task<IHttpActionResult> DeleteCart(Guid id)
-        {
-            Cart cart = await db.Carts.FindAsync(id);
-            if (cart == null)
-            {
-                return NotFound();
-            }
+       
 
-            db.Carts.Remove(cart);
-            await db.SaveChangesAsync();
-
-            return Ok(cart);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool CartExists(int id)
-        {
-            return db.Carts.Count(e => e.ID == id) > 0;
-        }
+       
     }
 }

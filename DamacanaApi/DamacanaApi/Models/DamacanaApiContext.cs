@@ -22,7 +22,7 @@ namespace DamacanaApi.Models
 
         public System.Data.Entity.DbSet<DamacanaApi.Models.Product> Products { get; set; }
         public System.Data.Entity.DbSet<DamacanaApi.Models.Cart> Carts { get; set; }
-
+        public System.Data.Entity.DbSet<DamacanaApi.Models.Cart_Product> CartProducts { get; set; }
         public System.Data.Entity.DbSet<DamacanaApi.Models.Purchase> Purchases { get; set; }
         
     

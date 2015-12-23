@@ -10,7 +10,7 @@ namespace DamacanaApi.Models
         public int ID { get; set; }
         public int userId { get; set; }
         public decimal totalammount { get; set; }
-        public virtual List<Product> List { get; set; }
+     
 
         public DateTime Date { get; set; }
     }

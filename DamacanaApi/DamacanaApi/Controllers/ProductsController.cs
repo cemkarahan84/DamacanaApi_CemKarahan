@@ -36,20 +36,7 @@ namespace DamacanaApi.Controllers
             
         }
 
-        //DELETE api/Products
-
-       /* public void Delete(int id)
-        {
-
-            Product[] A = db.Products.ToArray();
-
-            Product tmp = A[id];
-
-            db.Products.Remove(tmp);
-            db.SaveChanges();
-         
-        } */
-
+        
 
         //GET api/Products 
         public Product get (int id)
