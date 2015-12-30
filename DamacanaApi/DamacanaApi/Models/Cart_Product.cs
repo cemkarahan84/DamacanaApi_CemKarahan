@@ -12,7 +12,7 @@ namespace DamacanaApi.Models
 
           
             
-            public int Amount { get; set; }
+           
            
 
 

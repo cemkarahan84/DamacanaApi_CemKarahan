@@ -10,12 +10,12 @@ namespace DamacanaApi.Models
         public int Id { get; set; }
 
 
-        DateTime Time { get; set; }
+       
 
         
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }
-        
+        public int CartId { get; set; }
         public int PurchaseId { get; set; }
 
     }

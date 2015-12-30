@@ -38,13 +38,11 @@ namespace DamacanaApi.Controllers
 
         
 
-        //GET api/Products 
+        //GET: api/Products 
         public Product get (int id)
         {
-            Product[] A = db.Products.ToArray();
-
-            Product tmp = A[id];
-            return tmp;
+            Product p = db.Products.Find(id);
+            return p;
         }
 
 

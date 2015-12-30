@@ -17,59 +17,29 @@ namespace DamacanaApi.Controllers
     {
         private DamacanaApiContext db = new DamacanaApiContext();
 
-       
-        // GET: /api/Purchases/5
-        public IQueryable<PurchaseDTO> Get()
+
+        // GET: api/Purchases/
+        [ResponseType(typeof(PurchaseDTO))]
+        [HttpGet]
+        public IQueryable<PurchaseDTO> GetPurchases()
         {
             var Purch = from p in db.Purchases
                         select new PurchaseDTO()
                         {
-                            Date=p.Date,
-                           ID=p.ID,
-                           totalammount=p.totalammount
+                            Date = p.Date,
+                            ID = p.ID,
+                            totalammount = p.totalammount
 
                         };
             return Purch;
         }
 
-
-        // POST: /api/Purchases/5
-        public void Post(int C_Id)
-        {
-            Cart cart=db.Carts.Find(C_Id); //recherche cart
-
-            Purchase purchases = new Purchase();// new purchase
-            purchases.List=new List<Purchase_Product> ();//new list purchase
-            
-
-            purchases.Date = new DateTime();
-            purchases.totalammount = cart.Total;
-          
-            var products = from p in cart.List
-                           select new Purchase_Product
-                           {
-                               Id = p.Id,
-                               Product = p.Product,
-                               ProductId = p.ProductId,
-
-
-                           };
-            purchases.List = products.ToList();
-
-            db.Purchases.Add(purchases);
-            //db.Entry(purchases).State = EntityState.Modified;
-            db.SaveChanges();
-
-
-
-        }
-
-        /*
-        // GET: api/Purchases/{id}
-        public PurchasesDetailDTO get(int P_ID)
+        //Get api/Purchases/{P_ID}
+        [ResponseType(typeof(PurchasesDetailDTO))][HttpGet]
+        public PurchasesDetailDTO PurchaseDetail(int P_ID)
         {
 
-            Purchase purch= db.Purchases.Find(P_ID);
+            Purchase purch = db.Purchases.Find(P_ID);
             PurchasesDetailDTO PDTO = new PurchasesDetailDTO();
 
             PDTO.ID = purch.ID;
@@ -86,7 +56,48 @@ namespace DamacanaApi.Controllers
                             };
 
 
+            PDTO.List = Purchases.ToList();
             return PDTO;
-        } */
+        }
+
+        /********************************/
+
+        // POST: api/Purchases/{CID}
+        [HttpPost]
+        public void POST(int CID)
+        {
+            Cart cart = db.Carts.Find(CID); //recherche cart
+
+            Purchase purchases = new Purchase();// new purchase
+            purchases.Date = DateTime.Now;
+
+
+            purchases.totalammount = cart.Total;
+
+            purchases.List = new List<Purchase_Product>();//new list purchase
+
+            foreach (Cart_Product cp in cart.List)
+            {
+                Purchase_Product PP = new Purchase_Product();
+
+                PP.CartId = cp.CartId;
+                PP.ProductId = cp.ProductId;
+                PP.PurchaseId = purchases.ID;
+                PP.Product = cp.Product;
+                purchases.List.Add(PP);
+                db.PurchasesProducts.Add(PP);
+
+            }
+
+
+
+            db.Purchases.Add(purchases);
+
+
+            db.SaveChanges();
+
+
+
+        }
     }
 }
